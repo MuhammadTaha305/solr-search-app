@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# Solr Student Search
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React single-page app providing fast, faceted full-text search over student records backed by **Apache Solr**. Built to explore Solr's search features — faceting, highlighting, range filters, and relevance sorting — behind a clean UI.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Full-text search** across student name and department with wildcard matching
+- **Faceted filtering** by department, city, and semester (facets returned live from Solr)
+- **CGPA range queries** using Solr range syntax (`cgpa:[lo TO hi]`)
+- **Search-term highlighting** in results (`<mark>` via Solr highlighting)
+- **Sortable, paginated** result set
+- Department, city, and semester filters driven by Solr's faceting API
 
-### `npm start`
+## Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| Layer | Technology |
+|---|---|
+| Frontend | React (Create React App) + lucide-react |
+| Search engine | Apache Solr (`student_records` core) |
+| Query API | Solr `select` handler (JSON, faceting, highlighting) |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## How it works
 
-### `npm test`
+The app builds Solr query strings client-side (`buildQuery` in `src/App.js`): it sets the query (`q`), filter queries (`fq`) for department/city/semester/CGPA, enables faceting on `department` and `city`, turns on highlighting for the `name` field, and handles paging via `start`/`rows`. Results and facet counts are rendered directly from the Solr JSON response.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Prerequisites
 
-### `npm run build`
+- Apache Solr running locally with a `student_records` core indexed with fields: `name`, `department`, `city`, `semester`, `cgpa`
+- The dev server proxies `/solr/...` to your Solr instance
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Run
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm install
+npm start        # http://localhost:3000
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Indexed fields
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Field | Type | Example |
+|---|---|---|
+| `name` | text | searchable, highlighted |
+| `department` | string | Computer Science, Software Engineering, AI, Data Science |
+| `city` | string | Lahore, Islamabad, Karachi, … |
+| `semester` | int | 2, 4, 6 |
+| `cgpa` | float | range-filterable |
