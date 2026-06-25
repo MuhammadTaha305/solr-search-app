@@ -1,5 +1,7 @@
 # Solr Student Search
 
+> 📚 **Course:** Parallel & Distributed Computing — Spring 2026, NUST SEECS
+
 A React single-page app providing fast, faceted full-text search over student records backed by **Apache Solr**. Built to explore Solr's search features — faceting, highlighting, range filters, and relevance sorting — behind a clean UI.
 
 ## Features
